@@ -9,7 +9,8 @@ import {
   Activity, 
   History,
   FileSearch,
-  School
+  School,
+  BookOpen
 } from 'lucide-react';
 
 const Reports: React.FC = () => {
@@ -123,8 +124,8 @@ const Reports: React.FC = () => {
               R
             </div>
             <div>
-              <h1 className="text-2xl font-black uppercase tracking-tight text-slate-900">Laporan Pentaksiran Bilik Darjah (PBD)</h1>
-              <p className="text-slate-500 font-bold uppercase tracking-widest text-sm mt-1">Sesi Persekolahan 2026/2027</p>
+              <h1 className="text-2xl font-black uppercase tracking-tight text-slate-900 leading-none">Laporan Pentaksiran Bilik Darjah (PBD)</h1>
+              <p className="text-slate-500 font-bold uppercase tracking-widest text-sm mt-2">Sesi Persekolahan 2026/2027</p>
             </div>
           </div>
           <div className="text-right">
@@ -132,7 +133,10 @@ const Reports: React.FC = () => {
               <School size={16} />
               <p className="font-black text-lg uppercase">{data.userProfile.schoolName}</p>
             </div>
-            <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">Subjek: Reka Bentuk & Teknologi (F1)</p>
+            <div className="flex items-center justify-end gap-2 bg-indigo-50 px-4 py-1.5 rounded-full border border-indigo-100">
+              <BookOpen size={12} className="text-indigo-600" />
+              <p className="text-indigo-600 font-black text-[10px] uppercase tracking-widest">MATA PELAJARAN: REKA BENTUK & TEKNOLOGI</p>
+            </div>
           </div>
         </div>
 
@@ -141,25 +145,25 @@ const Reports: React.FC = () => {
           {reportType === 'matrix' && (
             <div className="animate-in fade-in slide-in-from-top-4 duration-500">
               <div className="flex items-center gap-3 mb-8">
-                <Table className="text-indigo-600" />
-                <h3 className="text-xl font-black uppercase tracking-wider">Matrik Tahap Penguasaan Keseluruhan - Kelas {selectedClass}</h3>
+                <Table className="text-indigo-600" size={20} />
+                <h3 className="text-xl font-black uppercase tracking-wider text-slate-800">Matrik Tahap Penguasaan Keseluruhan - Kelas {selectedClass}</h3>
               </div>
               <table className="w-full border-collapse border border-slate-200">
                 <thead>
                   <tr className="bg-slate-50">
-                    <th className="border border-slate-200 p-4 text-xs font-black uppercase">BIL</th>
+                    <th className="border border-slate-200 p-4 text-xs font-black uppercase text-center w-12">BIL</th>
                     <th className="border border-slate-200 p-4 text-xs font-black uppercase text-left">NAMA MURID</th>
                     {INITIAL_TOPICS.map(t => (
                       <th key={t.id} className="border border-slate-200 p-4 text-[10px] font-black uppercase text-center w-20">Bab {t.id}</th>
                     ))}
-                    <th className="border border-slate-200 p-4 text-xs font-black uppercase text-center bg-indigo-50 text-indigo-600">TP AKHIR</th>
+                    <th className="border border-slate-200 p-4 text-xs font-black uppercase text-center bg-indigo-50 text-indigo-600 w-24">TP AKHIR</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.students.filter(s => s.kelas === selectedClass).map((student, idx) => (
                     <tr key={student.id} className="hover:bg-slate-50">
                       <td className="border border-slate-200 p-4 text-center font-bold text-slate-400">{idx + 1}</td>
-                      <td className="border border-slate-200 p-4 font-bold text-slate-700 uppercase">{student.nama}</td>
+                      <td className="border border-slate-200 p-4 font-bold text-slate-700 uppercase text-sm">{student.nama}</td>
                       {INITIAL_TOPICS.map(topic => {
                         const records = data.records.filter(r => r.studentId === student.id && r.topicId === topic.id);
                         const highestTP = records.length > 0 ? Math.max(...records.map(r => r.tp)) : "-";
@@ -178,8 +182,8 @@ const Reports: React.FC = () => {
           {reportType === 'class_evidence' && (
             <div className="animate-in fade-in slide-in-from-top-4 duration-500">
                <div className="flex items-center gap-3 mb-8">
-                <Activity className="text-indigo-600" />
-                <h3 className="text-xl font-black uppercase tracking-wider">Laporan Evidens SP - Kelas {selectedClass}</h3>
+                <Activity className="text-indigo-600" size={20} />
+                <h3 className="text-xl font-black uppercase tracking-wider text-slate-800">Laporan Evidens SP - Kelas {selectedClass}</h3>
               </div>
               <div className="space-y-12">
                 {INITIAL_TOPICS.map(topic => (
@@ -199,9 +203,9 @@ const Reports: React.FC = () => {
                       <tbody>
                         {data.students.filter(s => s.kelas === selectedClass).map(student => (
                           <tr key={student.id}>
-                            <td className="border border-slate-200 p-4 font-bold text-slate-700 text-sm uppercase">{student.nama}</td>
+                            <td className="border border-slate-200 p-4 font-bold text-slate-700 text-xs uppercase">{student.nama}</td>
                             {topic.sps.map(sp => (
-                              <td key={sp.kod} className="border border-slate-200 p-4 text-center font-black">{getTPForSP(student.id, sp.kod)}</td>
+                              <td key={sp.kod} className="border border-slate-200 p-4 text-center font-black text-sm">{getTPForSP(student.id, sp.kod)}</td>
                             ))}
                           </tr>
                         ))}
@@ -218,57 +222,59 @@ const Reports: React.FC = () => {
                 <div className="bg-slate-50 p-10 rounded-[2rem] border border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-10">
                   <div className="space-y-6">
                     <div>
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Nama Penuh</p>
-                      <h4 className="text-2xl font-black text-slate-800 uppercase">{data.students.find(s => s.id === selectedStudentId)?.nama}</h4>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Nama Penuh Murid</p>
+                      <h4 className="text-2xl font-black text-slate-800 uppercase tracking-tight">{data.students.find(s => s.id === selectedStudentId)?.nama}</h4>
                     </div>
                     <div className="flex gap-10">
                       <div>
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Kelas</p>
-                        <h4 className="text-xl font-black text-slate-800">{data.students.find(s => s.id === selectedStudentId)?.kelas}</h4>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Kelas</p>
+                        <h4 className="text-xl font-black text-slate-800 uppercase">{data.students.find(s => s.id === selectedStudentId)?.kelas}</h4>
                       </div>
                       <div>
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">TP Keseluruhan</p>
-                        <h4 className="text-3xl font-black text-indigo-600">{getHighestTP(selectedStudentId)}</h4>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">TP Keseluruhan</p>
+                        <h4 className="text-4xl font-black text-indigo-600">{getHighestTP(selectedStudentId)}</h4>
                       </div>
                     </div>
                   </div>
                   <div className="flex flex-col justify-center items-end">
                     <div className="text-right">
-                       <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Tier Kemasukan</p>
-                       <span className="px-6 py-2 bg-indigo-600 text-white rounded-full font-black uppercase tracking-[0.2em] text-xs shadow-lg">
-                         TIER {data.students.find(s => s.id === selectedStudentId)?.tier}
+                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Status Penilaian</p>
+                       <span className="px-6 py-2 bg-indigo-600 text-white rounded-xl font-black uppercase tracking-[0.2em] text-[10px] shadow-lg shadow-indigo-600/20">
+                         PROFIL LENGKAP
                        </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-6">
-                  <h3 className="text-lg font-black uppercase tracking-widest border-b-2 border-slate-100 pb-3">Ringkasan Pencapaian Topik</h3>
-                  {INITIAL_TOPICS.map(topic => {
-                    const records = data.records.filter(r => r.studentId === selectedStudentId && r.topicId === topic.id);
-                    const highest = records.length > 0 ? Math.max(...records.map(r => r.tp)) : 0;
-                    
-                    return (
-                      <div key={topic.id} className="flex items-center gap-6 p-6 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-inner ${
-                          highest >= 4 ? 'bg-emerald-500 text-white' : 
-                          highest >= 3 ? 'bg-indigo-500 text-white' :
-                          'bg-slate-200 text-slate-400'
-                        }`}>
-                          {highest || '-'}
+                  <h3 className="text-sm font-black uppercase tracking-[0.4em] text-slate-800 border-b-2 border-slate-100 pb-3">Ringkasan Pencapaian Setiap Bab</h3>
+                  <div className="grid grid-cols-1 gap-4">
+                    {INITIAL_TOPICS.map(topic => {
+                      const records = data.records.filter(r => r.studentId === selectedStudentId && r.topicId === topic.id);
+                      const highest = records.length > 0 ? Math.max(...records.map(r => r.tp)) : 0;
+                      
+                      return (
+                        <div key={topic.id} className="flex items-center gap-6 p-6 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-inner ${
+                            highest >= 4 ? 'bg-emerald-500 text-white shadow-emerald-100' : 
+                            highest >= 3 ? 'bg-indigo-500 text-white shadow-indigo-100' :
+                            'bg-slate-100 text-slate-400'
+                          }`}>
+                            {highest || '-'}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Bab {topic.id}</p>
+                            <h4 className="font-black text-slate-700 uppercase text-sm">{topic.title}</h4>
+                          </div>
+                          <div className="text-right hidden md:block max-w-md">
+                            <p className="text-[10px] italic text-slate-500 font-medium">
+                              {records.length > 0 ? records[records.length - 1].notes || "Dikuasai dengan baik." : "Belum dinilai bagi bab ini."}
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex-1">
-                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Bab {topic.id}</p>
-                          <h4 className="font-bold text-slate-700">{topic.title}</h4>
-                        </div>
-                        <div className="text-right hidden md:block max-w-md">
-                          <p className="text-xs italic text-slate-500">
-                            {records.length > 0 ? records[records.length - 1].notes || "Tiada catatan tambahan." : "Belum dinilai."}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
              </div>
           )}
@@ -276,17 +282,17 @@ const Reports: React.FC = () => {
           {reportType === 'audit' && (
             <div className="animate-in fade-in slide-in-from-top-4 duration-500">
               <div className="flex items-center gap-3 mb-8">
-                <History className="text-indigo-600" />
-                <h3 className="text-xl font-black uppercase tracking-wider">Audit Trail Penilaian - Kelas {selectedClass}</h3>
+                <History className="text-indigo-600" size={20} />
+                <h3 className="text-xl font-black uppercase tracking-wider text-slate-800">Audit Trail Penilaian - Kelas {selectedClass}</h3>
               </div>
               <table className="w-full border-collapse border border-slate-200">
                 <thead>
                   <tr className="bg-slate-50">
                     <th className="border border-slate-200 p-4 text-xs font-black uppercase text-left">TARIKH & MASA</th>
-                    <th className="border border-slate-200 p-4 text-xs font-black uppercase text-left">MURID</th>
+                    <th className="border border-slate-200 p-4 text-xs font-black uppercase text-left">NAMA MURID</th>
                     <th className="border border-slate-200 p-4 text-xs font-black uppercase text-center">SP</th>
                     <th className="border border-slate-200 p-4 text-xs font-black uppercase text-center">TP</th>
-                    <th className="border border-slate-200 p-4 text-xs font-black uppercase text-left">CATATAN</th>
+                    <th className="border border-slate-200 p-4 text-xs font-black uppercase text-left">CATATAN GURU</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -296,12 +302,12 @@ const Reports: React.FC = () => {
                     .map(record => {
                       const student = data.students.find(s => s.id === record.studentId);
                       return (
-                        <tr key={record.id}>
-                          <td className="border border-slate-200 p-4 text-xs font-medium text-slate-500">{new Date(record.timestamp).toLocaleString()}</td>
-                          <td className="border border-slate-200 p-4 font-bold text-slate-700 text-sm uppercase">{student?.nama}</td>
+                        <tr key={record.id} className="text-xs">
+                          <td className="border border-slate-200 p-4 font-medium text-slate-500">{new Date(record.timestamp).toLocaleString()}</td>
+                          <td className="border border-slate-200 p-4 font-black text-slate-800 uppercase">{student?.nama}</td>
                           <td className="border border-slate-200 p-4 text-center font-bold text-indigo-600">{record.spKod}</td>
                           <td className="border border-slate-200 p-4 text-center font-black">{record.tp}</td>
-                          <td className="border border-slate-200 p-4 text-sm italic text-slate-500">{record.notes || "-"}</td>
+                          <td className="border border-slate-200 p-4 italic text-slate-500">{record.notes || "-"}</td>
                         </tr>
                       );
                     })}
@@ -311,16 +317,16 @@ const Reports: React.FC = () => {
           )}
 
           {/* Report Footer Signature */}
-          <div className="mt-20 flex justify-between">
-            <div className="w-64 border-t-2 border-slate-900 pt-4 text-center">
-              <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Disediakan Oleh</p>
-              <p className="font-black text-slate-900 uppercase">{data.userProfile.teacherName}</p>
-              <p className="text-[10px] text-slate-500 font-bold uppercase">Guru RBT (PBD System)</p>
+          <div className="mt-20 flex justify-between px-4">
+            <div className="w-72 border-t-2 border-slate-900 pt-6 text-center">
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Disediakan Oleh</p>
+              <p className="font-black text-slate-900 uppercase tracking-tight text-sm">{data.userProfile.teacherName}</p>
+              <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-1">GURU MATA PELAJARAN RBT</p>
             </div>
-            <div className="w-64 border-t-2 border-slate-900 pt-4 text-center">
-              <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Disahkan Oleh</p>
-              <p className="text-slate-200 h-6">_____________________</p>
-              <p className="text-[10px] text-slate-500 font-bold uppercase mt-2">Cap Rasmi Sekolah</p>
+            <div className="w-72 border-t-2 border-slate-900 pt-6 text-center">
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Disahkan Oleh</p>
+              <div className="h-10"></div>
+              <p className="text-[9px] text-slate-500 font-bold uppercase mt-2 tracking-widest">Cap Rasmi Sekolah & Tarikh</p>
             </div>
           </div>
         </div>
