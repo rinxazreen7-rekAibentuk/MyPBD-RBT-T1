@@ -53,13 +53,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Sync with viewMode: in differentiation mode, we might want them expanded by default
   useEffect(() => {
-    if (viewMode === 'differentiation') {
-      setIsExpanded(true);
-    } else {
-      setIsExpanded(false);
-    }
+    setIsExpanded(viewMode === 'differentiation');
   }, [viewMode]);
 
   return (
@@ -68,19 +63,16 @@ const TaskCard: React.FC<TaskCardProps> = ({
         ? 'bg-white border-indigo-500 shadow-[0_40px_80px_-15px_rgba(79,70,229,0.15)] scale-[1.02] z-10' 
         : 'bg-slate-50/50 border-slate-100 hover:border-indigo-200 hover:bg-white hover:shadow-2xl'
     }`}>
-      {/* Visual Accent - Color coded by TP level */}
       <div className={`absolute left-0 top-0 bottom-0 w-2 ${getTPColor(task.tpLevel)} opacity-80`} />
 
-      {/* Card Header Section */}
       <div 
         className="p-8 md:p-10 cursor-pointer select-none"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex flex-col md:flex-row items-start md:items-center gap-8">
-          {/* TP Avatar - High Contrast */}
           <div className={`w-20 h-20 ${getTPColor(task.tpLevel)} text-white rounded-[1.75rem] flex flex-col items-center justify-center shadow-xl shrink-0 transition-all duration-500 group-hover:scale-105 group-hover:-rotate-3`}>
             <span className="text-[10px] font-black opacity-60 tracking-widest leading-none mb-1 uppercase">Tahap</span>
-            <span className="text-4xl font-black leading-none">{task.tpLevel}</span>
+            <span className="text-4xl font-black leading-none">TP{task.tpLevel}</span>
           </div>
           
           <div className="flex-1 min-w-0 space-y-3">
@@ -122,7 +114,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
         </div>
       </div>
 
-      {/* Expandable Body Content */}
       <div className={`grid transition-all duration-500 ease-in-out ${
         isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
       }`}>
@@ -130,7 +121,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
           <div className="px-8 md:px-10 pb-12 space-y-10">
             <div className="h-px bg-slate-100 w-full" />
             
-            {/* Instruction Detail Area */}
             <div className="bg-slate-50/80 rounded-[2.5rem] p-10 border border-slate-200 relative group/instr hover:bg-white hover:border-indigo-100 transition-all duration-500">
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover/instr:opacity-10 transition-opacity">
                 <ClipboardCheck size={140} className="text-slate-950" />
@@ -149,10 +139,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
               </p>
             </div>
 
-            {/* Differentiated Strategies Section */}
             {task.diff && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in slide-in-from-bottom-8 duration-700">
-                {/* Process Strategy Card */}
                 <div className="p-10 bg-gradient-to-br from-indigo-50/50 to-white rounded-[3rem] border border-indigo-100 flex flex-col items-start hover:shadow-xl transition-all duration-500 group/process">
                   <div className="flex items-center gap-5 mb-8">
                     <div className="w-16 h-16 bg-white rounded-[1.25rem] border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm group-hover/process:bg-indigo-600 group-hover/process:text-white transition-all duration-500">
@@ -173,7 +161,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   </div>
                 </div>
 
-                {/* Product Strategy Card */}
                 <div className="p-10 bg-gradient-to-br from-emerald-50/50 to-white rounded-[3rem] border border-emerald-100 flex flex-col items-start hover:shadow-xl transition-all duration-500 group/product">
                   <div className="flex items-center gap-5 mb-8">
                     <div className="w-16 h-16 bg-white rounded-[1.25rem] border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm group-hover/product:bg-emerald-600 group-hover/product:text-white transition-all duration-500">
@@ -232,8 +219,11 @@ const ModuleDSKP: React.FC = () => {
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-    // @ts-ignore
-    window.html2pdf().from(element).set(opt).save();
+    
+    const h2p = (window as any).html2pdf;
+    if (h2p && element) {
+      h2p().from(element).set(opt).save();
+    }
   };
 
   const getTaskIcon = (type: string) => {
@@ -262,7 +252,6 @@ const ModuleDSKP: React.FC = () => {
 
   return (
     <div className="space-y-16 animate-in fade-in duration-1000 pb-20">
-      {/* Page Header Area */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
         <div className="space-y-4">
           <h1 className="text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none">
@@ -298,7 +287,6 @@ const ModuleDSKP: React.FC = () => {
         </div>
       </div>
 
-      {/* Navigation Matrix & Filters */}
       <div className="bg-white/90 backdrop-blur-2xl p-12 rounded-[4.5rem] border border-slate-200 shadow-sm space-y-12">
         <div className="flex flex-wrap gap-6 border-b border-slate-100 pb-12">
           {INITIAL_TOPICS.map(topic => (
@@ -362,15 +350,11 @@ const ModuleDSKP: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Content Layout */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-16">
-        
-        {/* Left Side: Context Sidebar */}
         <div className="xl:col-span-4 space-y-12">
           <div className="bg-white p-14 rounded-[5rem] shadow-sm border border-slate-100 relative overflow-hidden h-full">
             <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-50/50 rounded-full translate-x-40 -translate-y-40 blur-[120px] opacity-70"></div>
             <div className="space-y-20 relative z-10">
-              {/* Unit Info */}
               <section className="space-y-8">
                 <div className="flex items-center gap-6">
                   <div className="w-20 h-20 bg-indigo-600 rounded-[2rem] flex items-center justify-center text-white shadow-2xl shadow-indigo-200">
@@ -384,7 +368,6 @@ const ModuleDSKP: React.FC = () => {
                 </div>
               </section>
 
-              {/* SP Objective */}
               <section className="space-y-8">
                 <div className="flex items-center gap-6">
                   <div className="w-20 h-20 bg-emerald-600 rounded-[2rem] flex items-center justify-center text-white shadow-2xl shadow-emerald-200">
@@ -398,7 +381,6 @@ const ModuleDSKP: React.FC = () => {
                 </div>
               </section>
 
-              {/* DI Insight Card */}
               <div className="p-14 bg-amber-50/80 rounded-[4.5rem] border border-amber-100 relative group overflow-hidden">
                  <div className="absolute top-0 right-0 p-6 opacity-10">
                     <Sparkles size={160} className="text-amber-800" />
@@ -414,10 +396,8 @@ const ModuleDSKP: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Side: Interactive Task Cards Grid */}
         <div className="xl:col-span-8">
           <div className="bg-white p-14 md:p-20 rounded-[6rem] shadow-sm border border-slate-100 min-h-[900px]">
-            {/* List Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-24 gap-10 border-b border-slate-50 pb-16">
               <div className="flex items-center gap-10">
                 <div className="w-24 h-24 bg-slate-950 text-white rounded-[2.25rem] flex items-center justify-center shadow-[0_20px_40px_rgba(0,0,0,0.2)] group hover:scale-105 transition-transform duration-500">
@@ -434,7 +414,6 @@ const ModuleDSKP: React.FC = () => {
               </div>
             </div>
 
-            {/* Tasks Feed */}
             <div className="grid grid-cols-1 gap-14">
               {filteredTasks.length > 0 ? (
                 filteredTasks.map((task, idx) => (
@@ -461,7 +440,6 @@ const ModuleDSKP: React.FC = () => {
               )}
             </div>
             
-            {/* Footer Summary */}
             <div className="mt-24 p-12 bg-slate-50/50 rounded-[4rem] border border-slate-100 flex items-center justify-center text-center">
                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.6em] flex items-center gap-4">
                  <ArrowRight size={14} className="text-indigo-500" />
@@ -473,7 +451,6 @@ const ModuleDSKP: React.FC = () => {
         </div>
       </div>
 
-      {/* Hidden Print Section - Optimized for Paper */}
       <div className="hidden">
         <div id="printable-module" className="p-20 bg-white text-slate-950 font-sans min-h-[1100px]">
           <div className="flex justify-between items-center border-b-[14px] border-slate-900 pb-20 mb-28">
@@ -542,10 +519,6 @@ const ModuleDSKP: React.FC = () => {
                   <div className="ml-36 h-[600px] border-4 border-slate-100 rounded-[5rem] relative bg-slate-50/5">
                     <div className="absolute top-12 left-16 text-[12px] font-black text-slate-200 uppercase tracking-[2em] transform -rotate-90 origin-left">
                        Ruangan Jawapan / Lakaran Produk Kreatif
-                    </div>
-                    <div className="absolute bottom-12 right-16">
-                       <div className="w-80 h-1 bg-slate-100 rounded-full mb-3 opacity-30"></div>
-                       <p className="text-[11px] text-slate-200 font-black text-right uppercase tracking-widest">Student Response Area</p>
                     </div>
                   </div>
                </div>

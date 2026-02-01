@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useData } from '../App';
 import { INITIAL_TOPICS } from '../constants';
 import { 
-  FileDown, 
   Table, 
   User, 
   Activity, 
@@ -16,8 +15,6 @@ import {
   FileEdit,
   Mic2,
   Eye,
-  Info,
-  // Added ShieldCheck to resolve missing import errors
   ShieldCheck
 } from 'lucide-react';
 
@@ -36,8 +33,11 @@ const Reports: React.FC = () => {
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
     };
-    // @ts-ignore
-    window.html2pdf().from(element).set(opt).save();
+    
+    const h2p = (window as any).html2pdf;
+    if (h2p && element) {
+      h2p().from(element).set(opt).save();
+    }
   };
 
   const getHighestTP = (studentId: string) => {
@@ -61,7 +61,6 @@ const Reports: React.FC = () => {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
-      {/* Report Switcher */}
       <div className="bg-white p-2 rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-wrap lg:flex-nowrap gap-2">
         <button 
           onClick={() => setReportType('matrix')}
@@ -97,7 +96,6 @@ const Reports: React.FC = () => {
         </button>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="flex gap-4 w-full md:w-auto">
           {reportType !== 'individual' && (
@@ -131,9 +129,7 @@ const Reports: React.FC = () => {
         </button>
       </div>
 
-      {/* Report Container */}
       <div id="report-container" className="bg-white p-16 rounded-[4.5rem] shadow-sm border border-slate-100 min-h-[800px]">
-        {/* Report Header */}
         <div className="flex justify-between items-center mb-12 border-b-4 border-slate-900 pb-10">
           <div className="flex items-center gap-8">
             <div className="w-24 h-24 bg-slate-900 rounded-[2rem] flex items-center justify-center text-white text-4xl font-black italic shadow-2xl">
@@ -156,7 +152,6 @@ const Reports: React.FC = () => {
           </div>
         </div>
 
-        {/* Report Body */}
         <div className="report-content">
           {reportType === 'matrix' && (
             <div className="animate-in fade-in slide-in-from-top-4 duration-500">
@@ -211,7 +206,6 @@ const Reports: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-2xl font-black uppercase tracking-tight text-slate-800">Laporan Evidens & Kaedah Pentaksiran</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 italic">*Menyertakan perincian kaedah penjaminan kualiti PBD</p>
                 </div>
               </div>
               <div className="space-y-16">
@@ -323,8 +317,6 @@ const Reports: React.FC = () => {
                                  <CheckCircle2 size={12} className="text-emerald-500" />
                                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{records.length} SP Dinilai</span>
                                </div>
-                               <div className="w-[1px] h-3 bg-slate-200"></div>
-                               <p className="text-[10px] font-bold text-slate-400">Pencapaian: {highest > 0 ? `TP ${highest}` : 'N/A'}</p>
                             </div>
                           </div>
                           <div className="bg-slate-50 p-6 rounded-3xl max-w-sm border border-slate-100 group-hover:bg-white transition-colors">
@@ -350,8 +342,7 @@ const Reports: React.FC = () => {
                   <History size={20} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black uppercase tracking-tight text-slate-800">Jejak Audit Pentaksiran (Audit Trail)</h3>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Rekod Transaksi Penilaian • Kelas {selectedClass}</p>
+                  <h3 className="text-2xl font-black uppercase tracking-tight text-slate-800">Audit Trail</h3>
                 </div>
               </div>
               <div className="overflow-hidden rounded-[2.5rem] border border-slate-200">
@@ -360,10 +351,8 @@ const Reports: React.FC = () => {
                     <tr className="bg-slate-900 text-white">
                       <th className="p-6 text-[9px] font-black uppercase tracking-widest text-left">TARIKH & MASA</th>
                       <th className="p-6 text-[9px] font-black uppercase tracking-widest text-left">NAMA MURID</th>
-                      <th className="p-6 text-[9px] font-black uppercase tracking-widest text-center">KONTEKS SP</th>
                       <th className="p-6 text-[9px] font-black uppercase tracking-widest text-center">KAEDAH</th>
                       <th className="p-6 text-[9px] font-black uppercase tracking-widest text-center">TP</th>
-                      <th className="p-6 text-[9px] font-black uppercase tracking-widest text-left">CATATAN PENGUKUHAN</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -377,16 +366,12 @@ const Reports: React.FC = () => {
                             <td className="p-6 font-bold text-slate-400 text-[10px]">{new Date(record.timestamp).toLocaleString()}</td>
                             <td className="p-6 font-black text-slate-800 uppercase text-[10px]">{student?.nama}</td>
                             <td className="p-6 text-center">
-                               <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg font-black text-[10px] border border-indigo-100">{record.spKod}</span>
-                            </td>
-                            <td className="p-6 text-center">
                                <div className="flex items-center justify-center gap-2 text-slate-500 font-black text-[9px] uppercase tracking-tighter">
                                  {getKaedahIcon(record.kaedah)}
                                  {record.kaedah}
                                </div>
                             </td>
                             <td className="p-6 text-center font-black text-slate-900">{record.tp}</td>
-                            <td className="p-6 italic text-slate-500 text-[10px] font-medium leading-relaxed max-w-xs truncate" title={record.notes}>{record.notes || "-"}</td>
                           </tr>
                         );
                       })}
@@ -396,7 +381,6 @@ const Reports: React.FC = () => {
             </div>
           )}
 
-          {/* Report Footer Signature */}
           <div className="mt-24 flex flex-col md:flex-row justify-between items-end px-10 gap-16">
             <div className="w-full md:w-80 border-t-4 border-slate-900 pt-8 text-center">
               <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-4">Disediakan Oleh</p>
