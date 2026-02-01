@@ -12,7 +12,8 @@ import {
   Menu,
   X,
   BellRing,
-  ShieldCheck
+  ShieldCheck,
+  Library
 } from 'lucide-react';
 import { AppData, UserProfile } from './types';
 import { APP_DATA_KEY, INITIAL_TOPICS } from './constants';
@@ -24,6 +25,7 @@ import Rubrics from './pages/Rubrics';
 import Students from './pages/Students';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
+import ModuleDSKP from './pages/ModuleDSKP';
 
 interface DataContextType {
   data: AppData;
@@ -102,6 +104,7 @@ const Layout: React.FC = () => {
 
   const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
+    { name: 'Modul DSKP', icon: Library, path: '/module-dskp' },
     { name: 'Persediaan PdP', icon: BookOpen, path: '/lesson-prep' },
     { name: 'Pentaksiran', icon: CheckSquare, path: '/assessment' },
     { name: 'Rubrik', icon: ListTodo, path: '/rubrics' },
@@ -112,7 +115,6 @@ const Layout: React.FC = () => {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Premium Glass Sidebar */}
       <aside 
         className={`${
           isSidebarOpen ? 'w-[22rem]' : 'w-0'
@@ -170,9 +172,7 @@ const Layout: React.FC = () => {
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
-        {/* Transparent Luxury Header */}
         <header className="h-28 flex items-center justify-between px-14 sticky top-0 z-40 bg-white/40 backdrop-blur-xl border-b border-slate-200/50">
           <div className="flex items-center gap-8">
             <button 
@@ -207,11 +207,11 @@ const Layout: React.FC = () => {
           </div>
         </header>
 
-        {/* Dynamic Page Scroll Area */}
         <div className="flex-1 overflow-y-auto p-14 custom-scroll pb-32">
           <div className="max-w-[1700px] mx-auto">
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/module-dskp" element={<ModuleDSKP />} />
               <Route path="/lesson-prep" element={<LessonPrep />} />
               <Route path="/assessment" element={<Assessment />} />
               <Route path="/rubrics" element={<Rubrics />} />
@@ -220,18 +220,6 @@ const Layout: React.FC = () => {
               <Route path="/settings" element={<Settings />} />
             </Routes>
           </div>
-          
-          <footer className="mt-32 border-t border-slate-200/50 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
-             <div className="flex items-center gap-4">
-                <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-black text-xs">R</div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">PBD DIGITAL MANAGEMENT SYSTEM</p>
-             </div>
-             <div className="flex gap-8">
-                <a href="#" className="text-[9px] font-black text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest">Bantuan</a>
-                <a href="#" className="text-[9px] font-black text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest">Polisi Privasi</a>
-                <a href="#" className="text-[9px] font-black text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest">PENAFIAN</a>
-             </div>
-          </footer>
         </div>
       </main>
     </div>

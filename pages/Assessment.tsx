@@ -73,7 +73,7 @@ const PRESET_COMMENTS = [
 ];
 
 const Assessment: React.FC = () => {
-  const { data, saveData } = useData();
+  const { data, saveData, showToast } = useData();
   
   const [selectedClass, setSelectedClass] = useState(data.classes[0] || "");
   const [selectedStudentId, setSelectedStudentId] = useState("");
@@ -117,8 +117,19 @@ const Assessment: React.FC = () => {
   }, [selectedStudentId, selectedTopicId, selectedSPKod, data.records]);
 
   const handleSave = () => {
-    if (!selectedStudentId || !selectedTP) {
-      alert("Sila pilih murid dan Tahap Penguasaan (TP) terlebih dahulu.");
+    // Client-side Validation
+    if (!selectedStudentId) {
+      showToast("Sila pilih murid terlebih dahulu.");
+      return;
+    }
+
+    if (selectedTP === null) {
+      showToast("Sila pilih Tahap Penguasaan (TP).");
+      return;
+    }
+
+    if (selectedTP < 1 || selectedTP > 6) {
+      showToast("Tahap Penguasaan (TP) tidak sah. Mestilah antara 1 dan 6.");
       return;
     }
 

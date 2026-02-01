@@ -21,9 +21,24 @@ export interface UserProfile {
   schoolName: string;
 }
 
+export interface DifferentiationStrategy {
+  process: string; // Beza Proses: Cara murid melaksanakan tugasan
+  product: string; // Beza Produk: Hasil akhir yang dihasilkan
+  level: 'Rendah' | 'Sederhana' | 'Tinggi';
+}
+
+export interface ReinforcementTask {
+  tpLevel: number;
+  question: string;
+  instruction: string;
+  type: 'Bertulis' | 'Lisan' | 'Pemerhatian';
+  diff?: DifferentiationStrategy; // Strategi Aktiviti Terbeza
+}
+
 export interface SP {
   kod: string;
   deskripsi: string;
+  tasks: ReinforcementTask[]; 
 }
 
 export interface TPDescription {
@@ -44,7 +59,7 @@ export interface Topic {
     perempuan: string;
     elemen5C: string[];
   };
-  activities: string; // Simplified from Tier-based to a general instruction
+  activities: string;
 }
 
 export interface AppData {
